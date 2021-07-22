@@ -164,7 +164,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1270950112280218
 GameObject:
   m_ObjectHideFlags: 1
@@ -262,6 +262,7 @@ GameObject:
   - component: {fileID: 33782744492607150}
   - component: {fileID: 136059407231673384}
   - component: {fileID: 23588117932019248}
+  - component: {fileID: 114231521551786894}
   m_Layer: 0
   m_Name: Collider
   m_TagString: Untagged
@@ -493,13 +494,14 @@ GameObject:
   - component: {fileID: 33273350880093840}
   - component: {fileID: 23161915644546708}
   - component: {fileID: 114320352991233908}
+  - component: {fileID: 114326495756777304}
   m_Layer: 0
   m_Name: Wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4013543723787528
 Transform:
   m_ObjectHideFlags: 1
@@ -1041,7 +1043,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 894c830f0afd0b14ab2bd6509735da1e, type: 2}
+  - {fileID: 2100000, guid: f519f708c178a2d47b14b6b859d77c49, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1435,7 +1437,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1754516277834822}
-  m_Mesh: {fileID: 4300000, guid: 570836c48a008d844b18a36ef112801f, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 68fdb754dd3483e49ba5365c2caa4a5f, type: 3}
 --- !u!33 &33167619021368906
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -1449,7 +1451,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1973797028038254}
-  m_Mesh: {fileID: 4300000, guid: 936b612e9b073f942a0929dca9b50f95, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 68fdb754dd3483e49ba5365c2caa4a5f, type: 3}
 --- !u!33 &33295521428895934
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -1702,6 +1704,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HighlightScale: {x: 1, y: 1, z: 1}
   OutlineAmount: 0
+--- !u!114 &114231521551786894
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1504718680342020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Standard
 --- !u!114 &114233509169859892
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1737,6 +1752,19 @@ MonoBehaviour:
   AllowSelectionWrapY: 0
   ForceSelectionHighlight: 0
   ForceInteractionHighlight: 0
+--- !u!114 &114326495756777304
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1973797028038254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114339890271265434
 MonoBehaviour:
   m_ObjectHideFlags: 1
