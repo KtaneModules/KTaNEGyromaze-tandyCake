@@ -41,11 +41,10 @@ public class GyromazeScript : MonoBehaviour {
     private static readonly int[] offsets = { -4, 1, 4, -1 };
     private static readonly string dirs = "URDL";
     private static readonly string[] dirNames = { "Up", "Right", "Down", "Left" };
-    private Vector3 wheelAngle = 90 * Vector3.left;
-    private Vector3 roundedAngle = 90 * Vector3.left;
+    private Vector3 targetAngle = 90 * Vector3.left;
+    private Vector3 startAngle = 90 * Vector3.left;
     private Vector3 currentAngle = 90 * Vector3.left;
     private Coroutine rotate;
-    private float wheelDelta = 0;
 
     void Awake () {
         moduleId = moduleIdCounter++;
@@ -114,7 +113,8 @@ public class GyromazeScript : MonoBehaviour {
     {
         startPos = 4 * (Bomb.GetPortCount() % 4) + (Bomb.GetBatteryCount() % 4);
         do endPos = Rnd.Range(0, 16);
-        while (FindPath(startPos, endPos).Length < 4);
+        while (FindPath(startPos, endPos).Length < 3);
+        curPos = startPos;
         leds[0].material = ledColors[endPos % 4];
         leds[1].material = ledColors[endPos / 4];
         Debug.LogFormat("[Gyromaze #{0}] We are going from position {1} to position {2} in reading order.", moduleId, startPos + 1, endPos + 1);
@@ -131,18 +131,19 @@ public class GyromazeScript : MonoBehaviour {
     {
         rotation++;
         rotation %= 4;
+        Audio.PlaySoundAtTransform("spin", wheel.transform);
         Debug.LogFormat("[Gyromaze #{0}] Module rotated; the uppermost button will now move you {1}.", moduleId, dirNames[rotation]);
-        wheelAngle += 90 * Vector3.up;
-        wheelDelta = -1 * ((currentAngle.y - roundedAngle.y) / (roundedAngle.y - wheelAngle.y)); //Reverses the lerp function.
+        startAngle = currentAngle;
+        targetAngle += 90 * Vector3.up;
+        float wheelDelta = 0;
         while (wheelDelta < 1)
         {
-            wheelDelta += 2.5f * Time.deltaTime;
-            currentAngle = new Vector3(-90, Mathf.Lerp(roundedAngle.y, wheelAngle.y, wheelDelta), 0);
-            wheel.transform.localEulerAngles = currentAngle;
             yield return null;
+            wheelDelta += 3 * Time.deltaTime;
+            currentAngle = new Vector3(-90, Mathf.Lerp(startAngle.y, targetAngle.y, wheelDelta), 0);
+            wheel.transform.localEulerAngles = currentAngle;
         }
-        wheelDelta = 0;
-        roundedAngle = wheelAngle;
+        startAngle = targetAngle;
     }
     string FindPath(int start, int end)
     {
@@ -228,13 +229,14 @@ public class GyromazeScript : MonoBehaviour {
                 else down.OnInteract();
                 yield return new WaitForSeconds(0.2f);
             }
+            yield return null;
         }
     }
     public class Movement
     {
-        public int start { get; set; }
-        public int end { get; set; }
-        public char direction { get; set; }
+        public int start;
+        public int end;
+        public char direction;
         public Movement(int s, int e, int d)
         {
             start = s;
