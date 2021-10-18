@@ -32,7 +32,7 @@ public class GyromazeScript : MonoBehaviour {
         new string[] {"UL", "UR", "UL", "UR", "RDL", "RL", "RL", "RL", "UL", "D", "RD", "RL", "DL", "URD", "UDL", "RD"},
         new string[] {"UL", "UR", "URL", "URL", "RDL", "DL", "R", "RL", "UL", "U", "RD", "RL", "RDL", "DL", "UD", "RD"},
         new string[] {"UL", "UD", "UD", "URD", "DL", "UR", "UDL", "UR", "URL", "DL", "UD", "R", "DL", "UD", "UD", "RD"},
-        new string[] {"UL", "UD", "UR", "URL", "RL", "UDL", "D", "R", "RL", "URL", "RL", "RD", "DL", "RD", "DL", "URD"},
+        new string[] {"UL", "UD", "UR", "URL", "RL", "UDL", "D", "R", "RL", "URL", "UL", "RD", "DL", "RD", "DL", "URD"},
         new string[] {"UDL", "U", "UR", "URL", "UL", "RD", "DL", "R", "L", "URD", "URL", "RL", "DL", "URD", "DL", "RD"},
         new string[] {"URL", "UL", "UD", "UR", "L", "RD", "UL", "RD", "RL", "URL", "DL", "UR", "DL", "D", "URD", "RDL"},
         new string[] {"URL", "UL", "UD", "UR", "RL", "L", "UR", "RDL", "DL", "R", "DL", "UR", "UDL", "D", "URD", "RDL"}
@@ -57,12 +57,14 @@ public class GyromazeScript : MonoBehaviour {
             return false; };
         up.OnInteract += delegate ()
         {
+            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, up.transform);
             up.AddInteractionPunch(0.25f);
             Move(rotation % 4);
             return false;
         };
         down.OnInteract += delegate ()
         {
+            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, down.transform);
             down.AddInteractionPunch(0.25f);
             Move((rotation + 2) % 4);
             return false;
