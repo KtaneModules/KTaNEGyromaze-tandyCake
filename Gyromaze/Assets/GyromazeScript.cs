@@ -87,6 +87,7 @@ public class GyromazeScript : MonoBehaviour {
         {
             Debug.LogFormat("[Gyromaze #{0}] Attempted to move {1} from cell {2}. Strike!", moduleId, dirNames[direction], curPos + 1);
             curPos = startPos;
+            rotation = 0;
             Module.HandleStrike();
         }
         else
