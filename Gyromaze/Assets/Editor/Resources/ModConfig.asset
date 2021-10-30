@@ -17,6 +17,6 @@ MonoBehaviour:
   description: "Now you too can experience\u2026 nausea.\n\nNavigate through a maze
     using only two directional buttons.\n\nModule by Danny7007\nmoduleID: gyromaze\nManual
     can be found at ktane.timwi.de"
-  version: 1.1.0
+  version: 1.2.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: d2c86945a34977a46a9d916b422a10bc, type: 3}

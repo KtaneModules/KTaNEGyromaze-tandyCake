@@ -51,9 +51,7 @@ public class GyromazeScript : MonoBehaviour {
         wheel.OnInteract += delegate () 
         {
             wheel.AddInteractionPunch(0.5f);
-            if (rotate != null)
-                StopCoroutine(rotate);
-            rotate = StartCoroutine(Rotate());
+            Rotate();
             return false; };
         up.OnInteract += delegate ()
         {
@@ -94,7 +92,7 @@ public class GyromazeScript : MonoBehaviour {
         {
             curPos += offsets[direction];
             Debug.LogFormat("[Gyromaze #{0}] Moved {1} to cell {2}.", moduleId, dirNames[direction], curPos + 1);
-            StartCoroutine(Rotate());
+            Rotate();
             if (curPos == endPos)
                 Solve();
         }
@@ -121,16 +119,27 @@ public class GyromazeScript : MonoBehaviour {
         leds[0].material = ledColors[endPos % 4];
         leds[1].material = ledColors[endPos / 4];
         Debug.LogFormat("[Gyromaze #{0}] We are going from position {1} to position {2} in reading order.", moduleId, startPos + 1, endPos + 1);
+        StartCoroutine(LogPath());
+    }
+    IEnumerator LogPath()
+    {
+        yield return null;
         Debug.LogFormat("[Gyromaze #{0}] A correct path is {1}.", moduleId, FindPath(startPos, endPos));
-
     }
     void Solve()
     {
         moduleSolved = true;
         Module.HandlePass();
+        Audio.PlaySoundAtTransform("CunkySolve", transform);
     }
 
-    IEnumerator Rotate()
+    void Rotate()
+    {
+        if (rotate != null)
+            StopCoroutine(rotate);
+        rotate = StartCoroutine(RotateAnim());
+    }
+    IEnumerator RotateAnim()
     {
         rotation++;
         rotation %= 4;
@@ -159,7 +168,7 @@ public class GyromazeScript : MonoBehaviour {
         {
             int subject = q.Dequeue();
             for (int i = 0; i < 4; i++)
-                if (!chosenMaze[subject].Contains(dirs[i]) && !allMoves.Any(x => x.start == subject + offsets[i]))
+                if (!chosenMaze[subject].Contains(dirs[i]) && !allMoves.Any(x => x.start == subject + offsets[i]) && GetAdjacents(subject).Contains(subject + offsets[i]))
                 {
                     q.Enqueue(subject + offsets[i]);
                     allMoves.Add(new Movement(subject, subject + offsets[i], i));
@@ -227,7 +236,7 @@ public class GyromazeScript : MonoBehaviour {
                     wheel.OnInteract();
                     yield return new WaitForSeconds(0.2f);
                 }
-                if ((movement + rotation) % 4 == 0)
+                if ((movement - rotation + 4) % 4 == 0)
                     up.OnInteract();
                 else down.OnInteract();
                 yield return new WaitForSeconds(0.2f);
@@ -244,7 +253,7 @@ public class GyromazeScript : MonoBehaviour {
         {
             start = s;
             end = e;
-            direction = "ULDR"[d];
+            direction = "URDL"[d];
         }
     }
 }
