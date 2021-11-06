@@ -12,6 +12,12 @@ public class GyromazeScript : MonoBehaviour {
     public KMBombInfo Bomb;
     public KMAudio Audio;
     public KMBombModule Module;
+    public KMColorblindMode Colorblind;
+
+    public GameObject cbTicket;
+    public TextMesh[] cbTexts;
+    [SerializeField]
+    private bool cbON;
 
     static int moduleIdCounter = 1;
     int moduleId;
@@ -41,10 +47,12 @@ public class GyromazeScript : MonoBehaviour {
     private static readonly int[] offsets = { -4, 1, 4, -1 };
     private static readonly string dirs = "URDL";
     private static readonly string[] dirNames = { "Up", "Right", "Down", "Left" };
+    private static readonly string[] colorNames = { "Red", "Blue", "Green", "Yellow" };
     private Vector3 targetAngle = 90 * Vector3.left;
     private Vector3 startAngle = 90 * Vector3.left;
     private Vector3 currentAngle = 90 * Vector3.left;
     private Coroutine rotate;
+
 
     void Awake () {
         moduleId = moduleIdCounter++;
@@ -74,6 +82,8 @@ public class GyromazeScript : MonoBehaviour {
     {
         SetMetals();
         GetPositions();
+        if (Colorblind.ColorblindModeActive)
+            ToggleCB();
     }
 
     void Move(int direction)
@@ -104,6 +114,9 @@ public class GyromazeScript : MonoBehaviour {
         up.GetComponent<MeshRenderer>().material = metals[usingGold ? 1 : 0];
         down.GetComponent<MeshRenderer>().material = metals[usingGold ? 1 : 0];
         wheel.GetComponent<MeshRenderer>().material = metals[usingGold ? 1 : 0];
+
+        cbTexts[0].text = "Model: " + (usingGold ? "Gold" : "Silver");
+
         int mazeIx = Bomb.GetSerialNumberNumbers().Last() / 2;
         if (usingGold)
             mazeIx += 5;
@@ -118,6 +131,7 @@ public class GyromazeScript : MonoBehaviour {
         curPos = startPos;
         leds[0].material = ledColors[endPos % 4];
         leds[1].material = ledColors[endPos / 4];
+        cbTexts[1].text = string.Format("{0} / {1}", colorNames[endPos % 4], colorNames[endPos / 4]);
         Debug.LogFormat("[Gyromaze #{0}] We are going from position {1} to position {2} in reading order.", moduleId, startPos + 1, endPos + 1);
         StartCoroutine(LogPath());
     }
@@ -200,25 +214,39 @@ public class GyromazeScript : MonoBehaviour {
         if (pos < 12) yield return pos + 4;
     }
 
-    #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use <!{0} UDW> to press the up button, then the down button, then the wheel.";
+    void ToggleCB()
+    {
+        cbON = !cbON;
+        cbTicket.SetActive(cbON);
+    }
+
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"Use <!{0} UDW> to press the up button, then the down button, then the wheel. Use <!{0} colorblind> to toggle colorblind mode.";
     #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand (string command)
     {
         command = command.Trim().ToUpperInvariant();
-        Match m = Regex.Match(command, @"^(?:(?:PRESS|MOVE)\s+)?([UDW]+)$");
-        if (m.Success)
+        if (command.EqualsAny("COLORBLIND", "COLOURBLIND", "CB", "COLOR-BLIND", "COLOUR-BLIND"))
         {
-            foreach (char move in m.Groups[1].Value)
+            yield return null;
+            ToggleCB();
+        }
+        else
+        {
+            Match m = Regex.Match(command, @"^(?:(?:PRESS|MOVE)\s+)?([UDW]+)$");
+            if (m.Success)
             {
-                switch (move)
+                foreach (char move in m.Groups[1].Value)
                 {
-                    case 'U': up.OnInteract(); break;
-                    case 'D': down.OnInteract(); break;
-                    case 'W': wheel.OnInteract(); break;
+                    switch (move)
+                    {
+                        case 'U': up.OnInteract(); break;
+                        case 'D': down.OnInteract(); break;
+                        case 'W': wheel.OnInteract(); break;
+                    }
+                    yield return new WaitForSeconds(0.2f);
                 }
-                yield return new WaitForSeconds(0.2f);
             }
         }
     }
